@@ -1,9 +1,0 @@
-.Menu {
-    display: none;
-}
-
-@media (max-width: 499px) {
-    .Menu {
-        display: block;
-    }
-}
