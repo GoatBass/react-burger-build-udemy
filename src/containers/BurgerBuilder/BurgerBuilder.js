@@ -14,12 +14,12 @@ import * as actions from '../../store/actions';
 class BurgerBuilder extends Component {
     state = {
         purchasing: false
-    }
+    };
 
     componentDidMount(){
         console.log(this.props);
         this.props.onInitIngredients();
-    }
+    };
 
     updatePurchaseState = (ingredients) => {
         const sum = Object.keys(ingredients).map(igKey => {
@@ -28,22 +28,27 @@ class BurgerBuilder extends Component {
             return sum + el;
         }, 0);
         return sum > 0;
-    }
+    };
 
     purchaseHandler = () => {
-        this.setState({purchasing: true});
-    }
+        if(this.props.isAuthenticated){
+            this.setState({purchasing: true});
+        } else {
+            this.props.onSetAuthRedirectPath('/checkout');
+            this.props.history.push('/auth');
+        };
+    };
 
     purchaseCancelHandler = () => {
         console.log('We got here')
         this.setState({purchasing: false});
-    }
+    };
 
     purchaseContinueHandler = () => {
         // alert('You Continuie!!');
         this.props.onInitPurchase(); 
         this.props.history.push('/checkout');
-    }
+    };
 
     render() {
         const disabledInfo = {
@@ -66,6 +71,7 @@ class BurgerBuilder extends Component {
                                 price={this.props.price}
                                 purchaseable={this.updatePurchaseState(this.props.ings)}
                                 ordered={this.purchaseHandler}
+                                isAuth={this.props.isAuthenticated}
                             />
                 </Aux>
                 );
@@ -91,7 +97,8 @@ const mapStateToProps = state => {
     return {
         ings: state.burgerBuilder.ingredients,
         price: state.burgerBuilder.totalPrice,
-        error: state.burgerBuilder.error
+        error: state.burgerBuilder.error,
+        isAuthenticated: state.auth.token
     };
 }
 
@@ -100,7 +107,8 @@ const mapDispatchToProps = dispatch => {
         onAddIngredient: (ingName) => dispatch(actions.addIngredient(ingName)),
         onRemoveIngredient: (ingName) => dispatch(actions.removeIngredient(ingName)),
         onInitIngredients: () => dispatch(actions.initIngredients()),
-        onInitPurchase: () => dispatch(actions.purchaseInit())
+        onInitPurchase: () => dispatch(actions.purchaseInit()),
+        onSetAuthRedirectPath: (path) => dispatch(actions.setAuthRedirectPath(path))
     };
 };
 
