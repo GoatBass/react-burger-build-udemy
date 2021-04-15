@@ -17,7 +17,6 @@ class BurgerBuilder extends Component {
     };
 
     componentDidMount(){
-        console.log(this.props);
         this.props.onInitIngredients();
     };
 
@@ -40,7 +39,6 @@ class BurgerBuilder extends Component {
     };
 
     purchaseCancelHandler = () => {
-        console.log('We got here')
         this.setState({purchasing: false});
     };
 
